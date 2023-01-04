@@ -1,10 +1,5 @@
 //Перевіряємо вхідні дані
-const typeCheck = (data, si) => {
-  if (isNaN(data[1]) || si.units[data[0]] === undefined || si.units[data[0]][data[2]] === undefined) {
-    return false
-  } 
-    return true
-}
+const typeCheck = (data, si) => isNaN(data[1]) || si.units[data[0]] === undefined || si.units[data[0]][data[2]] === undefined
 
 //Створюємо вхідний JSON-обʼєкт 
 const inConstructor = (data) => {
@@ -23,10 +18,8 @@ const convertation = (data, si) => {
   const convert_to = data.convert_to
   const startValue = data.distance.value
   let convertedValue
-  const body = si.body
   const rule = si.units[unit][convert_to]
-  const process = new Function('value', body + rule)
-  convertedValue = process(startValue, body + rule)
+  convertedValue = startValue * rule
   return JSON.stringify(out = {
     unit: convert_to,
     value: convertedValue.toFixed(2)
@@ -38,6 +31,8 @@ const main = () => {
   const mainDB = require('./si.json')
   let input, output
   if (typeCheck(nodeData, mainDB)) {
+    throw 'invalid parameter'
+  } else {
     input = inConstructor(nodeData)
     output = convertation(input, mainDB)
     console.log(input)
